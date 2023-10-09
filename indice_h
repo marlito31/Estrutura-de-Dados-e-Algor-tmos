@@ -10,22 +10,6 @@ typedef struct autor
     int indice;
 } autor;
 
-void swap1(int i, autor *v)
-{
-    // char aux[31];
-    // int x;
-    // strcpy(aux, v[i + 1].nome);
-    // x = v[i+1].indice;
-    // strcpy(v[i + 1].nome, v[i].nome);
-    // v[i+1].indice = v[i].indice;
-    // strcpy(v[i].nome, aux);
-    // v[i].indice = x;
-    autor aux;
-    aux = v[i+1];
-    v[i+1] = v[i];
-    v[i] = aux;
-}
-
 static void merge(autor *v, autor *v1, autor *v2, int size)
 {
 
@@ -118,8 +102,8 @@ void merge_sort(autor *v, int size)
     }
 }
 
-
-static void merge1(int *v, int *v1, int *v2, int size) {
+static void merge1(int *v, int *v1, int *v2, int size)
+{
 
     int size_v1 = size / 2;
     int size_v2 = size - size_v1;
@@ -129,46 +113,55 @@ static void merge1(int *v, int *v1, int *v2, int size) {
 
     /** Enquanto não chegar ao fim da primeira
      *  e da segunda metade **/
-    for (i = 0; j < size_v1 && k < size_v2; i++) {
+    for (i = 0; j < size_v1 && k < size_v2; i++)
+    {
         /* Se o elemento da primeira metade
          * é menor ou igual ao da segunda metade,
          * insira-o no vetor resultado
          */
-        if (v1[j] >= v2[k]) {
+        if (v1[j] >= v2[k])
+        {
             v[i] = v1[j++];
         }
         /* Caso contrário, insira o elemento da
          * segunda metade no vetor resultado */
-        else {
+        else
+        {
             v[i] = v2[k++];
         }
     }
 
     /** Se ainda  restam elementos na primeira partição **/
-    while (j < size_v1) {
+    while (j < size_v1)
+    {
         /* Copiamos os elementos para o vetor resultado */
         v[i++] = v1[j++];
     }
     /** Se ainda  restam elementos na segunda partição **/
-    while (k < size_v2) {
+    while (k < size_v2)
+    {
         /* Copiamos os elementos para o vetor resultado */
         v[i++] = v2[k++];
     }
 }
 
-void merge_sort1(int *v, int size) {
+void merge_sort1(int *v, int size)
+{
     int mid;
-    if (size > 1) {
+    if (size > 1)
+    {
         mid = size / 2;
         /* aloca espaço para os subvetores */
         int *v1 = malloc(sizeof(int) * mid);
         int *v2 = malloc(sizeof(int) * size - mid);
         /* Copia os elementos de v para os subvetores */
         int i;
-        for (i = 0; i < mid; i++) {
+        for (i = 0; i < mid; i++)
+        {
             v1[i] = v[i];
         }
-        for (i = mid; i < size; i++) {
+        for (i = mid; i < size; i++)
+        {
             v2[i - mid] = v[i];
         }
         /* Ordena recursivamente a primeira metade */
@@ -183,6 +176,15 @@ void merge_sort1(int *v, int size) {
     }
 }
 
+void swap(int i, int j, autor *v)
+{
+    autor aux;
+    aux = v[i];
+    v[i] = v[j];
+    v[j] = aux;
+}
+
+
 void indice_h(int n, autor *v)
 {
     int *h;
@@ -194,7 +196,7 @@ void indice_h(int n, autor *v)
         {
             h[k] = v[i].cit[k];
         }
-        merge_sort1(h,v[i].publi);
+        merge_sort1(h, v[i].publi);
         for (int k = 0; k < v[i].publi; k++)
         {
             v[i].cit[k] = h[k];
@@ -210,17 +212,24 @@ void indice_h(int n, autor *v)
         free(v[i].cit);
     }
     merge_sort(v, n);
-    for (int i = 0; i < n-1; i++)
+    int swapped = 1;
+    for (int i = 0; i < n - 1 && swapped; i++)
     {
-        if(v[i].indice == v[i+1].indice)
+        swapped = 0;
+        for (int j = 0; j < n - i - 1; j++)
         {
-            if (strcmp(v[i].nome, v[i+1].nome) > 0)
+            if (v[j].indice == v[j+1].indice)
             {
-                swap1(i, v);
-            }
-            else
-            {
-                swap1(i++, v);
+                if (strcmp(v[j].nome, v[j+1].nome) > 0)
+                {
+                    swap(j, j+1, v);
+                    swapped = 1;
+                }
+                // else if(strcmp(v[i].nome, v[i + 1].nome) < 0)
+                // {
+                //     swap(i+1, i, v);
+                //     swapped = 1;
+                // }
             }
         }
     }
@@ -234,7 +243,7 @@ int main()
     for (int i = 0; i < n; i++)
     {
         scanf("%s %d", v[i].nome, &v[i].publi);
-        
+
         v[i].cit = malloc(v[i].publi * sizeof(int));
 
         for (int j = 0; j < v[i].publi; j++)
